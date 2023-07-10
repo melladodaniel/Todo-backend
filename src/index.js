@@ -1,6 +1,6 @@
 const cors = require('cors');
 const express = require('express');
-const initDB = require('./db/index.js');
+const {initDB} = require('./db');
 const ToDosRequestHandler = require('./handlers/todos.js');
 
 const Api = express();

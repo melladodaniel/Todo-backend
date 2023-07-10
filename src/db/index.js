@@ -37,5 +37,4 @@ async function initDB() {
   }
 }
 
-module.exports = initDB;
-module.exports = getDBHandler;
+module.exports = {initDB, getDBHandler};

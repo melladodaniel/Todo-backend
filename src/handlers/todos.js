@@ -1,7 +1,8 @@
-const Express = require('express');
-const getDBHandler = require('../db/index.js').default;
+const express = require('express');
+const {response} = require('express');
+const {getDBHandler} = require('../db/');
 
-const ToDosRequestHandler = Express.Router();
+const ToDosRequestHandler = express.Router();
 
 ToDosRequestHandler.post("/to-dos", async (request, response) => {
   try {
