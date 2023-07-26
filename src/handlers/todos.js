@@ -6,7 +6,7 @@ const ToDosRequestHandler = express.Router();
 
 ToDosRequestHandler.post("/to-dos", async (request, response) => {
   try {
-    const { title, description, isDone: is_done } = request.body;
+    const { title, description, isDone } = request.body;
     const dbHandler = await getDBHandler();
 
     const newTodo = await dbHandler.run(`
@@ -14,13 +14,13 @@ ToDosRequestHandler.post("/to-dos", async (request, response) => {
         VALUES (
             '${title}',
             '${description}',
-            ${is_done}
+            ${isDone}
         )
     `);
 
     await dbHandler.close();
 
-    response.send({ newTodo: { title, description, is_done, ...newTodo } });
+    response.send({ newTodo: { title, description, isDone, ...newTodo } });
   } catch (error) {
     response.status(500).send({
       error: `Something went wrong when trying to create a new to do`,
@@ -75,7 +75,7 @@ ToDosRequestHandler.patch("/to-dos/:id", async (request, response) => {
   //redacta el try - catch
   try { 
     const todoId = request.params.id; //el usuario hará cambios desde el body
-    const { title, description, isDone: is_done } = request.body;
+    const { title, description, is_done } = request.body;
     const dbHandler = await getDBHandler();
     //estos son los inputs del usuario en la base de datos
 
@@ -84,7 +84,7 @@ ToDosRequestHandler.patch("/to-dos/:id", async (request, response) => {
       todoId
     );
 
-    let isDone = is_done ? 1 : 0;
+  let isDone = is_done ? 1 : 0;
     
     //Aquí hay que definir lo que debe correr el API
     await dbHandler.run(
@@ -92,14 +92,15 @@ ToDosRequestHandler.patch("/to-dos/:id", async (request, response) => {
       WHERE id = ?`,
       title || todoToUpdate.title, 
       description || todoToUpdate.description, 
-      isDone, todoId || todoToUpdate.id
+      is_done, todoId || todoToUpdate.id
     );
 
     await dbHandler.close();
 
     //Aquí enviamos el dato para ver
     response.send({
-      todoUpdated: { ...todoToUpdate, title, description, is_done }
+     // todoUpdated: { ...todoToUpdate, title, description, is_done: isDone }
+     todoUpdated: { ...todoToUpdate, title, description, is_done: isDone }
     });
   } catch (error) {
     response.status(500).send({
